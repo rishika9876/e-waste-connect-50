@@ -1,7 +1,7 @@
 import { useSyncExternalStore } from "react";
 import { buildSeed, CATEGORIES, pad } from "./seed";
-import type { DB, Lang, Lot, Session, SyncState } from "./types";
-import type { Lang as LangT } from "./i18n";
+import type { DB, Lot, Session, SyncState } from "./types";
+import type { Lang } from "./i18n";
 
 const KEY = "ewaste_setu_db_v1";
 let cache: DB | null = null;
