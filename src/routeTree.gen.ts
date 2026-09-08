@@ -11,6 +11,9 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as AuthRouteImport } from './routes/auth'
+import { Route as CollectorRouteImport } from './routes/collector'
+import { Route as CollectorIndexRouteImport } from './routes/collector.index'
+import { Route as CollectorScanRouteImport } from './routes/collector.scan'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -22,31 +25,61 @@ const AuthRoute = AuthRouteImport.update({
   path: '/auth',
   getParentRoute: () => rootRouteImport,
 } as any)
+const CollectorRoute = CollectorRouteImport.update({
+  id: '/collector',
+  path: '/collector',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const CollectorIndexRoute = CollectorIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => CollectorRoute,
+} as any)
+const CollectorScanRoute = CollectorScanRouteImport.update({
+  id: '/scan',
+  path: '/scan',
+  getParentRoute: () => CollectorRoute,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/auth': typeof AuthRoute
+  '/collector': typeof CollectorRouteWithChildren
+  '/collector/scan': typeof CollectorScanRoute
+  '/collector/': typeof CollectorIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/auth': typeof AuthRoute
+  '/collector/scan': typeof CollectorScanRoute
+  '/collector': typeof CollectorIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/auth': typeof AuthRoute
+  '/collector': typeof CollectorRouteWithChildren
+  '/collector/scan': typeof CollectorScanRoute
+  '/collector/': typeof CollectorIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/auth'
+  fullPaths: '/' | '/auth' | '/collector' | '/collector/scan' | '/collector/'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/auth'
-  id: '__root__' | '/' | '/auth'
+  to: '/' | '/auth' | '/collector/scan' | '/collector'
+  id:
+    | '__root__'
+    | '/'
+    | '/auth'
+    | '/collector'
+    | '/collector/scan'
+    | '/collector/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AuthRoute: typeof AuthRoute
+  CollectorRoute: typeof CollectorRouteWithChildren
 }
 
 declare module '@tanstack/react-router' {
@@ -65,12 +98,48 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/collector': {
+      id: '/collector'
+      path: '/collector'
+      fullPath: '/collector'
+      preLoaderRoute: typeof CollectorRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/collector/': {
+      id: '/collector/'
+      path: '/'
+      fullPath: '/collector/'
+      preLoaderRoute: typeof CollectorIndexRouteImport
+      parentRoute: typeof CollectorRoute
+    }
+    '/collector/scan': {
+      id: '/collector/scan'
+      path: '/scan'
+      fullPath: '/collector/scan'
+      preLoaderRoute: typeof CollectorScanRouteImport
+      parentRoute: typeof CollectorRoute
+    }
   }
 }
+
+interface CollectorRouteChildren {
+  CollectorScanRoute: typeof CollectorScanRoute
+  CollectorIndexRoute: typeof CollectorIndexRoute
+}
+
+const CollectorRouteChildren: CollectorRouteChildren = {
+  CollectorScanRoute: CollectorScanRoute,
+  CollectorIndexRoute: CollectorIndexRoute,
+}
+
+const CollectorRouteWithChildren = CollectorRoute._addFileChildren(
+  CollectorRouteChildren,
+)
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AuthRoute: AuthRoute,
+  CollectorRoute: CollectorRouteWithChildren,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

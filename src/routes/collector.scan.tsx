@@ -4,7 +4,7 @@ import { toast } from "sonner";
 import { t } from "@/lib/i18n";
 import { classifyImage, type Classification } from "@/lib/classify";
 import { CATEGORIES } from "@/lib/seed";
-import { useLang, useSession, useDB, priceFor } from "@/lib/store";
+import { useLang, useSession, useDB } from "@/lib/store";
 import { createLot } from "@/lib/actions";
 import { Btn, Card, money, SpeakButton } from "@/components/ui-kit";
 
@@ -228,4 +228,3 @@ function Row({ label, value }: { label: string; value: string }) {
   );
 }
 
-export { priceFor };
