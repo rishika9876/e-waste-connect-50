@@ -79,8 +79,8 @@ export function signOut() {
   });
 }
 
-export function useLang(): LangT {
-  return useDB((d) => d.lang) as LangT;
+export function useLang(): Lang {
+  return useDB((d) => d.lang) as Lang;
 }
 
 export function setLang(lang: Lang) {
