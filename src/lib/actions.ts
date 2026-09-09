@@ -229,3 +229,142 @@ export function markPayment(lot_id: string, status: PaymentStatus, amount: numbe
   });
   enqueue(`Payment recorded for ${lot_id}`);
 }
+
+/* ---------- recycler / admin management ---------- */
+
+export function updateRecycler(recycler_id: string, patch: Partial<import("./types").Recycler>) {
+  setDB((d) => {
+    const r = d.recyclers.find((x) => x.recycler_id === recycler_id);
+    if (r) Object.assign(r, patch);
+  });
+  enqueue(`Recycler ${recycler_id} updated`);
+}
+
+export function setRecyclerStatus(
+  recycler_id: string,
+  status: import("./types").VerificationStatus,
+  note?: string,
+) {
+  setDB((d) => {
+    const r = d.recyclers.find((x) => x.recycler_id === recycler_id);
+    if (!r) return;
+    r.authorization_status = status;
+    if (status === "verified") r.verification_date = new Date().toISOString();
+    d.notifications.unshift({
+      id: `N-${Date.now()}`,
+      type: "verification",
+      title: `Verification ${status}`,
+      body: `${r.recycler_name}: ${status}${note ? ` — ${note}` : ""}`,
+      at: new Date().toISOString(),
+      role: "recycler",
+      read: false,
+    });
+  });
+  enqueue(`Recycler ${recycler_id} ${status}`);
+}
+
+export function upsertPrice(input: {
+  price_id?: string;
+  material_category: string;
+  location: string;
+  buying_price: number;
+  market_range_min: number;
+  market_range_max: number;
+  recycler_id?: string;
+}) {
+  setDB((d) => {
+    const existing = input.price_id ? d.prices.find((p) => p.price_id === input.price_id) : undefined;
+    if (existing) {
+      Object.assign(existing, input, { date_time: new Date().toISOString() });
+      return;
+    }
+    const cat = d.materials.find((m) => m.category === input.material_category);
+    d.prices.unshift({
+      price_id: `PR-${Date.now()}`,
+      material_category: input.material_category,
+      subcategory: cat?.subcategory ?? input.material_category,
+      location: input.location,
+      date_time: new Date().toISOString(),
+      buying_price: input.buying_price,
+      selling_price: Math.round(input.buying_price * 1.15),
+      unit: "kg",
+      market_range_min: input.market_range_min,
+      market_range_max: input.market_range_max,
+      recycler_id: input.recycler_id ?? "ADMIN",
+      created_at: new Date().toISOString(),
+    });
+  });
+  enqueue(`Price updated: ${input.material_category} @ ${input.location}`);
+}
+
+export function upsertMaterial(input: Partial<import("./types").Material> & { category: string }) {
+  setDB((d) => {
+    const existing = input.material_id
+      ? d.materials.find((m) => m.material_id === input.material_id)
+      : undefined;
+    if (existing) {
+      Object.assign(existing, input, { updated_at: new Date().toISOString() });
+      return;
+    }
+    d.materials.push({
+      material_id: `MAT-${String(d.materials.length + 1).padStart(3, "0")}`,
+      category: input.category,
+      subcategory: input.subcategory ?? input.category,
+      description: input.description ?? "",
+      icon: input.icon ?? "♻️",
+      approximate_weight: input.approximate_weight ?? 1,
+      condition: input.condition ?? "Scrap",
+      source_type: input.source_type ?? "Household",
+      estimated_value: input.estimated_value ?? 0,
+      created_at: new Date().toISOString(),
+      updated_at: new Date().toISOString(),
+    });
+  });
+  enqueue(`Material ${input.category} saved`);
+}
+
+export function deleteMaterial(material_id: string) {
+  setDB((d) => {
+    d.materials = d.materials.filter((m) => m.material_id !== material_id);
+  });
+  enqueue(`Material ${material_id} removed`);
+}
+
+export function resolveFlag(transaction_id: string) {
+  setDB((d) => {
+    const t = d.transactions.find((x) => x.transaction_id === transaction_id);
+    if (t) t.flagged = undefined;
+  });
+}
+
+export function updateSettings(patch: Partial<import("./types").DB["settings"]>) {
+  setDB((d) => {
+    d.settings = { ...d.settings, ...patch };
+  });
+}
+
+export function markNotificationsRead(role: import("./types").Role) {
+  setDB((d) => {
+    d.notifications.forEach((n) => {
+      if (n.role === role) n.read = true;
+    });
+  });
+}
+
+export function makeOffer(lot_id: string, recycler_id: string, rate: number) {
+  setDB((d) => {
+    const lot = d.lots.find((l) => l.lot_id === lot_id);
+    const rec = d.recyclers.find((r) => r.recycler_id === recycler_id);
+    if (!lot || !rec) return;
+    d.notifications.unshift({
+      id: `N-${Date.now()}`,
+      type: "offer",
+      title: "New offer on your lot",
+      body: `${rec.recycler_name} offers ₹${rate}/kg for ${lot_id} (≈ ₹${Math.round(rate * lot.weight)}).`,
+      at: new Date().toISOString(),
+      role: "collector",
+      read: false,
+    });
+  });
+  enqueue(`Offer sent for ${lot_id}`);
+}
