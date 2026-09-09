@@ -17,6 +17,7 @@ import { Route as CollectorLotsRouteImport } from './routes/collector.lots'
 import { Route as CollectorPricesRouteImport } from './routes/collector.prices'
 import { Route as CollectorRecyclersRouteImport } from './routes/collector.recyclers'
 import { Route as CollectorScanRouteImport } from './routes/collector.scan'
+import { Route as CollectorHandoverLotIdRouteImport } from './routes/collector.handover.$lotId'
 import { Route as CollectorLotLotIdRouteImport } from './routes/collector.lot.$lotId'
 
 const IndexRoute = IndexRouteImport.update({
@@ -59,6 +60,11 @@ const CollectorScanRoute = CollectorScanRouteImport.update({
   path: '/scan',
   getParentRoute: () => CollectorRoute,
 } as any)
+const CollectorHandoverLotIdRoute = CollectorHandoverLotIdRouteImport.update({
+  id: '/handover/$lotId',
+  path: '/handover/$lotId',
+  getParentRoute: () => CollectorRoute,
+} as any)
 const CollectorLotLotIdRoute = CollectorLotLotIdRouteImport.update({
   id: '/lot/$lotId',
   path: '/lot/$lotId',
@@ -74,6 +80,7 @@ export interface FileRoutesByFullPath {
   '/collector/recyclers': typeof CollectorRecyclersRoute
   '/collector/scan': typeof CollectorScanRoute
   '/collector/': typeof CollectorIndexRoute
+  '/collector/handover/$lotId': typeof CollectorHandoverLotIdRoute
   '/collector/lot/$lotId': typeof CollectorLotLotIdRoute
 }
 export interface FileRoutesByTo {
@@ -84,6 +91,7 @@ export interface FileRoutesByTo {
   '/collector/recyclers': typeof CollectorRecyclersRoute
   '/collector/scan': typeof CollectorScanRoute
   '/collector': typeof CollectorIndexRoute
+  '/collector/handover/$lotId': typeof CollectorHandoverLotIdRoute
   '/collector/lot/$lotId': typeof CollectorLotLotIdRoute
 }
 export interface FileRoutesById {
@@ -96,6 +104,7 @@ export interface FileRoutesById {
   '/collector/recyclers': typeof CollectorRecyclersRoute
   '/collector/scan': typeof CollectorScanRoute
   '/collector/': typeof CollectorIndexRoute
+  '/collector/handover/$lotId': typeof CollectorHandoverLotIdRoute
   '/collector/lot/$lotId': typeof CollectorLotLotIdRoute
 }
 export interface FileRouteTypes {
@@ -109,6 +118,7 @@ export interface FileRouteTypes {
     | '/collector/recyclers'
     | '/collector/scan'
     | '/collector/'
+    | '/collector/handover/$lotId'
     | '/collector/lot/$lotId'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -119,6 +129,7 @@ export interface FileRouteTypes {
     | '/collector/recyclers'
     | '/collector/scan'
     | '/collector'
+    | '/collector/handover/$lotId'
     | '/collector/lot/$lotId'
   id:
     | '__root__'
@@ -130,6 +141,7 @@ export interface FileRouteTypes {
     | '/collector/recyclers'
     | '/collector/scan'
     | '/collector/'
+    | '/collector/handover/$lotId'
     | '/collector/lot/$lotId'
   fileRoutesById: FileRoutesById
 }
@@ -197,6 +209,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof CollectorScanRouteImport
       parentRoute: typeof CollectorRoute
     }
+    '/collector/handover/$lotId': {
+      id: '/collector/handover/$lotId'
+      path: '/handover/$lotId'
+      fullPath: '/collector/handover/$lotId'
+      preLoaderRoute: typeof CollectorHandoverLotIdRouteImport
+      parentRoute: typeof CollectorRoute
+    }
     '/collector/lot/$lotId': {
       id: '/collector/lot/$lotId'
       path: '/lot/$lotId'
@@ -213,6 +232,7 @@ interface CollectorRouteChildren {
   CollectorRecyclersRoute: typeof CollectorRecyclersRoute
   CollectorScanRoute: typeof CollectorScanRoute
   CollectorIndexRoute: typeof CollectorIndexRoute
+  CollectorHandoverLotIdRoute: typeof CollectorHandoverLotIdRoute
   CollectorLotLotIdRoute: typeof CollectorLotLotIdRoute
 }
 
@@ -222,6 +242,7 @@ const CollectorRouteChildren: CollectorRouteChildren = {
   CollectorRecyclersRoute: CollectorRecyclersRoute,
   CollectorScanRoute: CollectorScanRoute,
   CollectorIndexRoute: CollectorIndexRoute,
+  CollectorHandoverLotIdRoute: CollectorHandoverLotIdRoute,
   CollectorLotLotIdRoute: CollectorLotLotIdRoute,
 }
 
