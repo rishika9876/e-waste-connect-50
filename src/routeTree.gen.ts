@@ -15,6 +15,7 @@ import { Route as CollectorRouteImport } from './routes/collector'
 import { Route as CollectorIndexRouteImport } from './routes/collector.index'
 import { Route as CollectorLotsRouteImport } from './routes/collector.lots'
 import { Route as CollectorPricesRouteImport } from './routes/collector.prices'
+import { Route as CollectorRecyclersRouteImport } from './routes/collector.recyclers'
 import { Route as CollectorScanRouteImport } from './routes/collector.scan'
 import { Route as CollectorLotLotIdRouteImport } from './routes/collector.lot.$lotId'
 
@@ -48,6 +49,11 @@ const CollectorPricesRoute = CollectorPricesRouteImport.update({
   path: '/prices',
   getParentRoute: () => CollectorRoute,
 } as any)
+const CollectorRecyclersRoute = CollectorRecyclersRouteImport.update({
+  id: '/recyclers',
+  path: '/recyclers',
+  getParentRoute: () => CollectorRoute,
+} as any)
 const CollectorScanRoute = CollectorScanRouteImport.update({
   id: '/scan',
   path: '/scan',
@@ -65,6 +71,7 @@ export interface FileRoutesByFullPath {
   '/collector': typeof CollectorRouteWithChildren
   '/collector/lots': typeof CollectorLotsRoute
   '/collector/prices': typeof CollectorPricesRoute
+  '/collector/recyclers': typeof CollectorRecyclersRoute
   '/collector/scan': typeof CollectorScanRoute
   '/collector/': typeof CollectorIndexRoute
   '/collector/lot/$lotId': typeof CollectorLotLotIdRoute
@@ -74,6 +81,7 @@ export interface FileRoutesByTo {
   '/auth': typeof AuthRoute
   '/collector/lots': typeof CollectorLotsRoute
   '/collector/prices': typeof CollectorPricesRoute
+  '/collector/recyclers': typeof CollectorRecyclersRoute
   '/collector/scan': typeof CollectorScanRoute
   '/collector': typeof CollectorIndexRoute
   '/collector/lot/$lotId': typeof CollectorLotLotIdRoute
@@ -85,6 +93,7 @@ export interface FileRoutesById {
   '/collector': typeof CollectorRouteWithChildren
   '/collector/lots': typeof CollectorLotsRoute
   '/collector/prices': typeof CollectorPricesRoute
+  '/collector/recyclers': typeof CollectorRecyclersRoute
   '/collector/scan': typeof CollectorScanRoute
   '/collector/': typeof CollectorIndexRoute
   '/collector/lot/$lotId': typeof CollectorLotLotIdRoute
@@ -97,6 +106,7 @@ export interface FileRouteTypes {
     | '/collector'
     | '/collector/lots'
     | '/collector/prices'
+    | '/collector/recyclers'
     | '/collector/scan'
     | '/collector/'
     | '/collector/lot/$lotId'
@@ -106,6 +116,7 @@ export interface FileRouteTypes {
     | '/auth'
     | '/collector/lots'
     | '/collector/prices'
+    | '/collector/recyclers'
     | '/collector/scan'
     | '/collector'
     | '/collector/lot/$lotId'
@@ -116,6 +127,7 @@ export interface FileRouteTypes {
     | '/collector'
     | '/collector/lots'
     | '/collector/prices'
+    | '/collector/recyclers'
     | '/collector/scan'
     | '/collector/'
     | '/collector/lot/$lotId'
@@ -171,6 +183,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof CollectorPricesRouteImport
       parentRoute: typeof CollectorRoute
     }
+    '/collector/recyclers': {
+      id: '/collector/recyclers'
+      path: '/recyclers'
+      fullPath: '/collector/recyclers'
+      preLoaderRoute: typeof CollectorRecyclersRouteImport
+      parentRoute: typeof CollectorRoute
+    }
     '/collector/scan': {
       id: '/collector/scan'
       path: '/scan'
@@ -191,6 +210,7 @@ declare module '@tanstack/react-router' {
 interface CollectorRouteChildren {
   CollectorLotsRoute: typeof CollectorLotsRoute
   CollectorPricesRoute: typeof CollectorPricesRoute
+  CollectorRecyclersRoute: typeof CollectorRecyclersRoute
   CollectorScanRoute: typeof CollectorScanRoute
   CollectorIndexRoute: typeof CollectorIndexRoute
   CollectorLotLotIdRoute: typeof CollectorLotLotIdRoute
@@ -199,6 +219,7 @@ interface CollectorRouteChildren {
 const CollectorRouteChildren: CollectorRouteChildren = {
   CollectorLotsRoute: CollectorLotsRoute,
   CollectorPricesRoute: CollectorPricesRoute,
+  CollectorRecyclersRoute: CollectorRecyclersRoute,
   CollectorScanRoute: CollectorScanRoute,
   CollectorIndexRoute: CollectorIndexRoute,
   CollectorLotLotIdRoute: CollectorLotLotIdRoute,
