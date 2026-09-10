@@ -10,8 +10,10 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as AdminRouteImport } from './routes/admin'
 import { Route as AuthRouteImport } from './routes/auth'
 import { Route as CollectorRouteImport } from './routes/collector'
+import { Route as RecyclerRouteImport } from './routes/recycler'
 import { Route as CollectorIndexRouteImport } from './routes/collector.index'
 import { Route as CollectorEarningsRouteImport } from './routes/collector.earnings'
 import { Route as CollectorLotsRouteImport } from './routes/collector.lots'
@@ -30,6 +32,11 @@ const IndexRoute = IndexRouteImport.update({
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AdminRoute = AdminRouteImport.update({
+  id: '/admin',
+  path: '/admin',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const AuthRoute = AuthRouteImport.update({
   id: '/auth',
   path: '/auth',
@@ -38,6 +45,11 @@ const AuthRoute = AuthRouteImport.update({
 const CollectorRoute = CollectorRouteImport.update({
   id: '/collector',
   path: '/collector',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const RecyclerRoute = RecyclerRouteImport.update({
+  id: '/recycler',
+  path: '/recycler',
   getParentRoute: () => rootRouteImport,
 } as any)
 const CollectorIndexRoute = CollectorIndexRouteImport.update({
@@ -103,8 +115,10 @@ const CollectorReceiptLotIdRoute = CollectorReceiptLotIdRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/admin': typeof AdminRoute
   '/auth': typeof AuthRoute
   '/collector': typeof CollectorRouteWithChildren
+  '/recycler': typeof RecyclerRoute
   '/collector/earnings': typeof CollectorEarningsRoute
   '/collector/lots': typeof CollectorLotsRoute
   '/collector/notifications': typeof CollectorNotificationsRoute
@@ -120,7 +134,9 @@ export interface FileRoutesByFullPath {
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/admin': typeof AdminRoute
   '/auth': typeof AuthRoute
+  '/recycler': typeof RecyclerRoute
   '/collector/earnings': typeof CollectorEarningsRoute
   '/collector/lots': typeof CollectorLotsRoute
   '/collector/notifications': typeof CollectorNotificationsRoute
@@ -137,8 +153,10 @@ export interface FileRoutesByTo {
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/admin': typeof AdminRoute
   '/auth': typeof AuthRoute
   '/collector': typeof CollectorRouteWithChildren
+  '/recycler': typeof RecyclerRoute
   '/collector/earnings': typeof CollectorEarningsRoute
   '/collector/lots': typeof CollectorLotsRoute
   '/collector/notifications': typeof CollectorNotificationsRoute
@@ -156,8 +174,10 @@ export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
+    | '/admin'
     | '/auth'
     | '/collector'
+    | '/recycler'
     | '/collector/earnings'
     | '/collector/lots'
     | '/collector/notifications'
@@ -173,7 +193,9 @@ export interface FileRouteTypes {
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
+    | '/admin'
     | '/auth'
+    | '/recycler'
     | '/collector/earnings'
     | '/collector/lots'
     | '/collector/notifications'
@@ -189,8 +211,10 @@ export interface FileRouteTypes {
   id:
     | '__root__'
     | '/'
+    | '/admin'
     | '/auth'
     | '/collector'
+    | '/recycler'
     | '/collector/earnings'
     | '/collector/lots'
     | '/collector/notifications'
@@ -207,8 +231,10 @@ export interface FileRouteTypes {
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  AdminRoute: typeof AdminRoute
   AuthRoute: typeof AuthRoute
   CollectorRoute: typeof CollectorRouteWithChildren
+  RecyclerRoute: typeof RecyclerRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -218,6 +244,13 @@ declare module '@tanstack/react-router' {
       path: '/'
       fullPath: '/'
       preLoaderRoute: typeof IndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/admin': {
+      id: '/admin'
+      path: '/admin'
+      fullPath: '/admin'
+      preLoaderRoute: typeof AdminRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/auth': {
@@ -232,6 +265,13 @@ declare module '@tanstack/react-router' {
       path: '/collector'
       fullPath: '/collector'
       preLoaderRoute: typeof CollectorRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/recycler': {
+      id: '/recycler'
+      path: '/recycler'
+      fullPath: '/recycler'
+      preLoaderRoute: typeof RecyclerRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/collector/': {
@@ -357,8 +397,10 @@ const CollectorRouteWithChildren = CollectorRoute._addFileChildren(
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  AdminRoute: AdminRoute,
   AuthRoute: AuthRoute,
   CollectorRoute: CollectorRouteWithChildren,
+  RecyclerRoute: RecyclerRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
