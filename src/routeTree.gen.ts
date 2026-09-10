@@ -13,12 +13,17 @@ import { Route as IndexRouteImport } from './routes/index'
 import { Route as AuthRouteImport } from './routes/auth'
 import { Route as CollectorRouteImport } from './routes/collector'
 import { Route as CollectorIndexRouteImport } from './routes/collector.index'
+import { Route as CollectorEarningsRouteImport } from './routes/collector.earnings'
 import { Route as CollectorLotsRouteImport } from './routes/collector.lots'
+import { Route as CollectorNotificationsRouteImport } from './routes/collector.notifications'
 import { Route as CollectorPricesRouteImport } from './routes/collector.prices'
 import { Route as CollectorRecyclersRouteImport } from './routes/collector.recyclers'
+import { Route as CollectorSafetyRouteImport } from './routes/collector.safety'
 import { Route as CollectorScanRouteImport } from './routes/collector.scan'
 import { Route as CollectorHandoverLotIdRouteImport } from './routes/collector.handover.$lotId'
 import { Route as CollectorLotLotIdRouteImport } from './routes/collector.lot.$lotId'
+import { Route as CollectorPaymentLotIdRouteImport } from './routes/collector.payment.$lotId'
+import { Route as CollectorReceiptLotIdRouteImport } from './routes/collector.receipt.$lotId'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -40,9 +45,19 @@ const CollectorIndexRoute = CollectorIndexRouteImport.update({
   path: '/',
   getParentRoute: () => CollectorRoute,
 } as any)
+const CollectorEarningsRoute = CollectorEarningsRouteImport.update({
+  id: '/earnings',
+  path: '/earnings',
+  getParentRoute: () => CollectorRoute,
+} as any)
 const CollectorLotsRoute = CollectorLotsRouteImport.update({
   id: '/lots',
   path: '/lots',
+  getParentRoute: () => CollectorRoute,
+} as any)
+const CollectorNotificationsRoute = CollectorNotificationsRouteImport.update({
+  id: '/notifications',
+  path: '/notifications',
   getParentRoute: () => CollectorRoute,
 } as any)
 const CollectorPricesRoute = CollectorPricesRouteImport.update({
@@ -53,6 +68,11 @@ const CollectorPricesRoute = CollectorPricesRouteImport.update({
 const CollectorRecyclersRoute = CollectorRecyclersRouteImport.update({
   id: '/recyclers',
   path: '/recyclers',
+  getParentRoute: () => CollectorRoute,
+} as any)
+const CollectorSafetyRoute = CollectorSafetyRouteImport.update({
+  id: '/safety',
+  path: '/safety',
   getParentRoute: () => CollectorRoute,
 } as any)
 const CollectorScanRoute = CollectorScanRouteImport.update({
@@ -70,42 +90,67 @@ const CollectorLotLotIdRoute = CollectorLotLotIdRouteImport.update({
   path: '/lot/$lotId',
   getParentRoute: () => CollectorRoute,
 } as any)
+const CollectorPaymentLotIdRoute = CollectorPaymentLotIdRouteImport.update({
+  id: '/payment/$lotId',
+  path: '/payment/$lotId',
+  getParentRoute: () => CollectorRoute,
+} as any)
+const CollectorReceiptLotIdRoute = CollectorReceiptLotIdRouteImport.update({
+  id: '/receipt/$lotId',
+  path: '/receipt/$lotId',
+  getParentRoute: () => CollectorRoute,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/auth': typeof AuthRoute
   '/collector': typeof CollectorRouteWithChildren
+  '/collector/earnings': typeof CollectorEarningsRoute
   '/collector/lots': typeof CollectorLotsRoute
+  '/collector/notifications': typeof CollectorNotificationsRoute
   '/collector/prices': typeof CollectorPricesRoute
   '/collector/recyclers': typeof CollectorRecyclersRoute
+  '/collector/safety': typeof CollectorSafetyRoute
   '/collector/scan': typeof CollectorScanRoute
   '/collector/': typeof CollectorIndexRoute
   '/collector/handover/$lotId': typeof CollectorHandoverLotIdRoute
   '/collector/lot/$lotId': typeof CollectorLotLotIdRoute
+  '/collector/payment/$lotId': typeof CollectorPaymentLotIdRoute
+  '/collector/receipt/$lotId': typeof CollectorReceiptLotIdRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/auth': typeof AuthRoute
+  '/collector/earnings': typeof CollectorEarningsRoute
   '/collector/lots': typeof CollectorLotsRoute
+  '/collector/notifications': typeof CollectorNotificationsRoute
   '/collector/prices': typeof CollectorPricesRoute
   '/collector/recyclers': typeof CollectorRecyclersRoute
+  '/collector/safety': typeof CollectorSafetyRoute
   '/collector/scan': typeof CollectorScanRoute
   '/collector': typeof CollectorIndexRoute
   '/collector/handover/$lotId': typeof CollectorHandoverLotIdRoute
   '/collector/lot/$lotId': typeof CollectorLotLotIdRoute
+  '/collector/payment/$lotId': typeof CollectorPaymentLotIdRoute
+  '/collector/receipt/$lotId': typeof CollectorReceiptLotIdRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/auth': typeof AuthRoute
   '/collector': typeof CollectorRouteWithChildren
+  '/collector/earnings': typeof CollectorEarningsRoute
   '/collector/lots': typeof CollectorLotsRoute
+  '/collector/notifications': typeof CollectorNotificationsRoute
   '/collector/prices': typeof CollectorPricesRoute
   '/collector/recyclers': typeof CollectorRecyclersRoute
+  '/collector/safety': typeof CollectorSafetyRoute
   '/collector/scan': typeof CollectorScanRoute
   '/collector/': typeof CollectorIndexRoute
   '/collector/handover/$lotId': typeof CollectorHandoverLotIdRoute
   '/collector/lot/$lotId': typeof CollectorLotLotIdRoute
+  '/collector/payment/$lotId': typeof CollectorPaymentLotIdRoute
+  '/collector/receipt/$lotId': typeof CollectorReceiptLotIdRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -113,36 +158,51 @@ export interface FileRouteTypes {
     | '/'
     | '/auth'
     | '/collector'
+    | '/collector/earnings'
     | '/collector/lots'
+    | '/collector/notifications'
     | '/collector/prices'
     | '/collector/recyclers'
+    | '/collector/safety'
     | '/collector/scan'
     | '/collector/'
     | '/collector/handover/$lotId'
     | '/collector/lot/$lotId'
+    | '/collector/payment/$lotId'
+    | '/collector/receipt/$lotId'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
     | '/auth'
+    | '/collector/earnings'
     | '/collector/lots'
+    | '/collector/notifications'
     | '/collector/prices'
     | '/collector/recyclers'
+    | '/collector/safety'
     | '/collector/scan'
     | '/collector'
     | '/collector/handover/$lotId'
     | '/collector/lot/$lotId'
+    | '/collector/payment/$lotId'
+    | '/collector/receipt/$lotId'
   id:
     | '__root__'
     | '/'
     | '/auth'
     | '/collector'
+    | '/collector/earnings'
     | '/collector/lots'
+    | '/collector/notifications'
     | '/collector/prices'
     | '/collector/recyclers'
+    | '/collector/safety'
     | '/collector/scan'
     | '/collector/'
     | '/collector/handover/$lotId'
     | '/collector/lot/$lotId'
+    | '/collector/payment/$lotId'
+    | '/collector/receipt/$lotId'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -181,11 +241,25 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof CollectorIndexRouteImport
       parentRoute: typeof CollectorRoute
     }
+    '/collector/earnings': {
+      id: '/collector/earnings'
+      path: '/earnings'
+      fullPath: '/collector/earnings'
+      preLoaderRoute: typeof CollectorEarningsRouteImport
+      parentRoute: typeof CollectorRoute
+    }
     '/collector/lots': {
       id: '/collector/lots'
       path: '/lots'
       fullPath: '/collector/lots'
       preLoaderRoute: typeof CollectorLotsRouteImport
+      parentRoute: typeof CollectorRoute
+    }
+    '/collector/notifications': {
+      id: '/collector/notifications'
+      path: '/notifications'
+      fullPath: '/collector/notifications'
+      preLoaderRoute: typeof CollectorNotificationsRouteImport
       parentRoute: typeof CollectorRoute
     }
     '/collector/prices': {
@@ -200,6 +274,13 @@ declare module '@tanstack/react-router' {
       path: '/recyclers'
       fullPath: '/collector/recyclers'
       preLoaderRoute: typeof CollectorRecyclersRouteImport
+      parentRoute: typeof CollectorRoute
+    }
+    '/collector/safety': {
+      id: '/collector/safety'
+      path: '/safety'
+      fullPath: '/collector/safety'
+      preLoaderRoute: typeof CollectorSafetyRouteImport
       parentRoute: typeof CollectorRoute
     }
     '/collector/scan': {
@@ -223,27 +304,51 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof CollectorLotLotIdRouteImport
       parentRoute: typeof CollectorRoute
     }
+    '/collector/payment/$lotId': {
+      id: '/collector/payment/$lotId'
+      path: '/payment/$lotId'
+      fullPath: '/collector/payment/$lotId'
+      preLoaderRoute: typeof CollectorPaymentLotIdRouteImport
+      parentRoute: typeof CollectorRoute
+    }
+    '/collector/receipt/$lotId': {
+      id: '/collector/receipt/$lotId'
+      path: '/receipt/$lotId'
+      fullPath: '/collector/receipt/$lotId'
+      preLoaderRoute: typeof CollectorReceiptLotIdRouteImport
+      parentRoute: typeof CollectorRoute
+    }
   }
 }
 
 interface CollectorRouteChildren {
+  CollectorEarningsRoute: typeof CollectorEarningsRoute
   CollectorLotsRoute: typeof CollectorLotsRoute
+  CollectorNotificationsRoute: typeof CollectorNotificationsRoute
   CollectorPricesRoute: typeof CollectorPricesRoute
   CollectorRecyclersRoute: typeof CollectorRecyclersRoute
+  CollectorSafetyRoute: typeof CollectorSafetyRoute
   CollectorScanRoute: typeof CollectorScanRoute
   CollectorIndexRoute: typeof CollectorIndexRoute
   CollectorHandoverLotIdRoute: typeof CollectorHandoverLotIdRoute
   CollectorLotLotIdRoute: typeof CollectorLotLotIdRoute
+  CollectorPaymentLotIdRoute: typeof CollectorPaymentLotIdRoute
+  CollectorReceiptLotIdRoute: typeof CollectorReceiptLotIdRoute
 }
 
 const CollectorRouteChildren: CollectorRouteChildren = {
+  CollectorEarningsRoute: CollectorEarningsRoute,
   CollectorLotsRoute: CollectorLotsRoute,
+  CollectorNotificationsRoute: CollectorNotificationsRoute,
   CollectorPricesRoute: CollectorPricesRoute,
   CollectorRecyclersRoute: CollectorRecyclersRoute,
+  CollectorSafetyRoute: CollectorSafetyRoute,
   CollectorScanRoute: CollectorScanRoute,
   CollectorIndexRoute: CollectorIndexRoute,
   CollectorHandoverLotIdRoute: CollectorHandoverLotIdRoute,
   CollectorLotLotIdRoute: CollectorLotLotIdRoute,
+  CollectorPaymentLotIdRoute: CollectorPaymentLotIdRoute,
+  CollectorReceiptLotIdRoute: CollectorReceiptLotIdRoute,
 }
 
 const CollectorRouteWithChildren = CollectorRoute._addFileChildren(
