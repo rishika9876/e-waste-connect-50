@@ -76,7 +76,7 @@ export function useDB<T>(select: (db: DB) => T): T {
 export function resetDemoData() {
   cache = buildSeed();
   persist();
-  listeners.forEach((l) => l());
+  bump();
 }
 
 /* ---------- session & language ---------- */
