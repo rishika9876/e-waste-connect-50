@@ -1,4 +1,4 @@
-import { useSyncExternalStore } from "react";
+import { useMemo, useRef, useSyncExternalStore } from "react";
 import { buildSeed, CATEGORIES, pad } from "./seed";
 import type { DB, Lot, Session, SyncState } from "./types";
 import type { Lang } from "./i18n";
@@ -32,12 +32,19 @@ export function getDB(): DB {
   return load();
 }
 
+let version = 0;
+
+function bump() {
+  version += 1;
+  listeners.forEach((l) => l());
+}
+
 export function setDB(fn: (db: DB) => DB | void) {
   const db = load();
   const next = fn(db);
   cache = (next as DB) ?? db;
   persist();
-  listeners.forEach((l) => l());
+  bump();
 }
 
 function subscribe(cb: () => void) {
@@ -47,18 +54,29 @@ function subscribe(cb: () => void) {
 
 const serverSnapshot = buildSeed();
 
+/**
+ * Selector-based store hook. The external snapshot is a stable version number,
+ * so selectors may return freshly-created objects/arrays without tripping
+ * React's "getSnapshot should be cached" infinite-loop guard.
+ */
 export function useDB<T>(select: (db: DB) => T): T {
-  return useSyncExternalStore(
+  const selectRef = useRef(select);
+  selectRef.current = select;
+  const v = useSyncExternalStore(
     subscribe,
-    () => select(load()),
-    () => select(serverSnapshot),
+    () => version,
+    () => -1,
+  );
+  return useMemo(
+    () => (v === -1 ? selectRef.current(serverSnapshot) : selectRef.current(load())),
+    [v],
   );
 }
 
 export function resetDemoData() {
   cache = buildSeed();
   persist();
-  listeners.forEach((l) => l());
+  bump();
 }
 
 /* ---------- session & language ---------- */

@@ -14,7 +14,7 @@ export function createLot(input: {
   collector_id: string;
   items: LotItem[];
   description: string;
-  photo?: string;
+  photo?: string | undefined;
   location: string;
   source_type: string;
   estimated_value: number;
