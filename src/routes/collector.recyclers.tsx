@@ -8,7 +8,7 @@ import { Badge, Btn, Card, EmptyState, money, SpeakButton } from "@/components/u
 
 export const Route = createFileRoute("/collector/recyclers")({
   validateSearch: (s: Record<string, unknown>) => ({
-    lot: typeof s.lot === "string" ? s.lot : undefined,
+    lot: typeof s['lot'] === "string" ? (s['lot'] as string) : undefined,
   }),
   head: () => ({
     meta: [

@@ -278,7 +278,7 @@ function PricesTab() {
         </div>
         <Btn
           onClick={() => {
-            if (!Number(buy)) return toast.error("Enter a buying price");
+            if (!Number(buy)) { toast.error("Enter a buying price"); return; }
             upsertPrice({
               material_category: cat,
               location: loc,
@@ -343,7 +343,7 @@ function MaterialsTab() {
         </div>
         <Btn
           onClick={() => {
-            if (!name.trim()) return toast.error("Enter a category name");
+            if (!name.trim()) { toast.error("Enter a category name"); return; }
             upsertMaterial({ category: name.trim(), icon, estimated_value: Number(value) || 0 });
             toast.success("Material saved");
             setName("");
