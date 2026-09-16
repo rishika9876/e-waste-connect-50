@@ -1,4 +1,4 @@
-import { useSyncExternalStore } from "react";
+import { useMemo, useRef, useSyncExternalStore } from "react";
 import { buildSeed, CATEGORIES, pad } from "./seed";
 import type { DB, Lot, Session, SyncState } from "./types";
 import type { Lang } from "./i18n";
