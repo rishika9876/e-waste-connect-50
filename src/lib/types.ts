@@ -5,11 +5,11 @@ export type Role = "collector" | "recycler" | "admin";
 
 export interface Collector {
   collector_id: string;
-  nickname?: string;
+  nickname?: string | undefined;
   mobile: string;
   preferred_language: Lang;
   general_location: string;
-  photo?: string;
+  photo?: string | undefined;
   created_at: string;
 }
 
@@ -31,7 +31,7 @@ export interface Recycler {
   service_area: string[];
   rating: number;
   distance_km: number;
-  verification_date?: string;
+  verification_date?: string | undefined;
   created_at: string;
 }
 
@@ -78,14 +78,14 @@ export interface LotItem {
   subcategory: string;
   weight: number;
   condition: string;
-  photo?: string;
+  photo?: string | undefined;
 }
 
 export interface TimelineEvent {
   step: string;
   icon: string;
   at: string;
-  location?: string;
+  location?: string | undefined;
 }
 
 export interface Lot {
@@ -93,20 +93,20 @@ export interface Lot {
   collector_id: string;
   items: LotItem[];
   description: string;
-  photo?: string;
+  photo?: string | undefined;
   weight: number;
   source_type: string;
   collection_location: string;
   gps: { lat: number; lng: number };
   created_at: string;
   estimated_value: number;
-  final_value?: number;
-  recycler_id?: string;
+  final_value?: number | undefined;
+  recycler_id?: string | undefined;
   status: LotStatus;
   sync: SyncState;
   timeline: TimelineEvent[];
-  pickup?: { date: string; time: string; location: string };
-  handover_id?: string;
+  pickup?: { date: string; time: string; location: string } | undefined;
+  handover_id?: string | undefined;
 }
 
 export type PaymentStatus =
@@ -131,13 +131,13 @@ export interface Transaction {
   date_time: string;
   payment_status: PaymentStatus;
   transaction_status: LotStatus;
-  flagged?: string;
+  flagged?: string | undefined;
 }
 
 export interface Traceability {
   traceability_id: string;
   lot_id: string;
-  photograph_reference?: string;
+  photograph_reference?: string | undefined;
   weight: number;
   timestamp: string;
   gps_location: string;
