@@ -24,10 +24,10 @@ export const Route = createFileRoute("/collector")({
 
 const NAV = [
   { to: "/collector", icon: "🏠", key: "home", exact: true },
-  { to: "/collector/prices", icon: "💰", key: "price" },
-  { to: "/collector/lots", icon: "📦", key: "myLots" },
-  { to: "/collector/earnings", icon: "💵", key: "earnings" },
-  { to: "/collector/safety", icon: "⚠️", key: "safety" },
+  { to: "/collector/prices", icon: "💰", key: "price", exact: false },
+  { to: "/collector/lots", icon: "📦", key: "myLots", exact: false },
+  { to: "/collector/earnings", icon: "💵", key: "earnings", exact: false },
+  { to: "/collector/safety", icon: "⚠️", key: "safety", exact: false },
 ] as const;
 
 function CollectorLayout() {
