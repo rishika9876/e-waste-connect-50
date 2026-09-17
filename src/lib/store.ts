@@ -7,12 +7,77 @@ const KEY = "ewaste_setu_db_v1";
 let cache: DB | null = null;
 const listeners = new Set<() => void>();
 
+function isRecord(value: unknown): value is Record<string, unknown> {
+  return typeof value === "object" && value !== null;
+}
+
+/** Keep data saved by older demo versions compatible with the current UI. */
+function normalizeStoredDB(value: unknown): DB {
+  const seed = buildSeed();
+  if (!isRecord(value)) return seed;
+
+  const arrayOrSeed = <T,>(key: keyof DB, fallback: T[]): T[] =>
+    Array.isArray(value[key]) ? (value[key] as T[]) : fallback;
+  const storedSettings = isRecord(value.settings) ? value.settings : {};
+  const storedSession = isRecord(value.session) ? value.session : null;
+  const session: Session | null =
+    storedSession &&
+    (storedSession.role === "collector" ||
+      storedSession.role === "recycler" ||
+      storedSession.role === "admin") &&
+    typeof storedSession.id === "string" &&
+    typeof storedSession.name === "string"
+      ? { role: storedSession.role, id: storedSession.id, name: storedSession.name }
+      : null;
+
+  return {
+    collectors: arrayOrSeed("collectors", seed.collectors),
+    recyclers: arrayOrSeed("recyclers", seed.recyclers).map((recycler) => ({
+      ...recycler,
+      materials_accepted: Array.isArray(recycler.materials_accepted)
+        ? recycler.materials_accepted
+        : [],
+      offered_rate: isRecord(recycler.offered_rate) ? recycler.offered_rate : {},
+      service_area: Array.isArray(recycler.service_area) ? recycler.service_area : [],
+    })),
+    materials: arrayOrSeed("materials", seed.materials),
+    prices: arrayOrSeed("prices", seed.prices),
+    lots: arrayOrSeed("lots", seed.lots).map((lot) => ({
+      ...lot,
+      items: Array.isArray(lot.items) ? lot.items : [],
+      timeline: Array.isArray(lot.timeline) ? lot.timeline : [],
+      sync: lot.sync === "pending" || lot.sync === "failed" ? lot.sync : "synced",
+    })),
+    transactions: arrayOrSeed("transactions", seed.transactions),
+    traceability: arrayOrSeed("traceability", seed.traceability),
+    notifications: arrayOrSeed("notifications", seed.notifications),
+    settings: {
+      commission_pct:
+        typeof storedSettings.commission_pct === "number"
+          ? storedSettings.commission_pct
+          : seed.settings.commission_pct,
+      pickup_cost:
+        typeof storedSettings.pickup_cost === "number"
+          ? storedSettings.pickup_cost
+          : seed.settings.pickup_cost,
+      ops_cost:
+        typeof storedSettings.ops_cost === "number"
+          ? storedSettings.ops_cost
+          : seed.settings.ops_cost,
+    },
+    session,
+    lang: value.lang === "en" || value.lang === "hi" || value.lang === "mr" ? value.lang : seed.lang,
+    queue: arrayOrSeed("queue", seed.queue),
+  };
+}
+
 function load(): DB {
   if (cache) return cache;
   if (typeof window === "undefined") return (cache = buildSeed());
   try {
     const raw = window.localStorage.getItem(KEY);
-    cache = raw ? (JSON.parse(raw) as DB) : buildSeed();
+    cache = raw ? normalizeStoredDB(JSON.parse(raw) as unknown) : buildSeed();
+    window.localStorage.setItem(KEY, JSON.stringify(cache));
   } catch {
     cache = buildSeed();
   }
@@ -105,7 +170,8 @@ export function setLang(lang: Lang) {
   setDB((d) => {
     d.lang = lang;
     if (d.session?.role === "collector") {
-      const c = d.collectors.find((x) => x.collector_id === d.session!.id);
+      const collectorId = d.session.id;
+      const c = d.collectors.find((x) => x.collector_id === collectorId);
       if (c) c.preferred_language = lang;
     }
   });
