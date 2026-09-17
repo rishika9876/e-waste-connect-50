@@ -18,16 +18,16 @@ function normalizeStoredDB(value: unknown): DB {
 
   const arrayOrSeed = <T,>(key: keyof DB, fallback: T[]): T[] =>
     Array.isArray(value[key]) ? (value[key] as T[]) : fallback;
-  const storedSettings = isRecord(value.settings) ? value.settings : {};
-  const storedSession = isRecord(value.session) ? value.session : null;
+  const storedSettings = isRecord(value["settings"]) ? value["settings"] : {};
+  const storedSession = isRecord(value["session"]) ? value["session"] : null;
   const session: Session | null =
     storedSession &&
-    (storedSession.role === "collector" ||
-      storedSession.role === "recycler" ||
-      storedSession.role === "admin") &&
-    typeof storedSession.id === "string" &&
-    typeof storedSession.name === "string"
-      ? { role: storedSession.role, id: storedSession.id, name: storedSession.name }
+    (storedSession["role"] === "collector" ||
+      storedSession["role"] === "recycler" ||
+      storedSession["role"] === "admin") &&
+    typeof storedSession["id"] === "string" &&
+    typeof storedSession["name"] === "string"
+      ? { role: storedSession["role"], id: storedSession["id"], name: storedSession["name"] }
       : null;
 
   return {
@@ -53,20 +53,23 @@ function normalizeStoredDB(value: unknown): DB {
     notifications: arrayOrSeed("notifications", seed.notifications),
     settings: {
       commission_pct:
-        typeof storedSettings.commission_pct === "number"
-          ? storedSettings.commission_pct
+        typeof storedSettings["commission_pct"] === "number"
+          ? storedSettings["commission_pct"]
           : seed.settings.commission_pct,
       pickup_cost:
-        typeof storedSettings.pickup_cost === "number"
-          ? storedSettings.pickup_cost
+        typeof storedSettings["pickup_cost"] === "number"
+          ? storedSettings["pickup_cost"]
           : seed.settings.pickup_cost,
       ops_cost:
-        typeof storedSettings.ops_cost === "number"
-          ? storedSettings.ops_cost
+        typeof storedSettings["ops_cost"] === "number"
+          ? storedSettings["ops_cost"]
           : seed.settings.ops_cost,
     },
     session,
-    lang: value.lang === "en" || value.lang === "hi" || value.lang === "mr" ? value.lang : seed.lang,
+    lang:
+      value["lang"] === "en" || value["lang"] === "hi" || value["lang"] === "mr"
+        ? value["lang"]
+        : seed.lang,
     queue: arrayOrSeed("queue", seed.queue),
   };
 }
